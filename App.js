@@ -12,20 +12,22 @@ import Toast from 'react-native-root-toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const Stack = createNativeStackNavigator();
 
-global.api_key = 'http://192.168.1.16:8000/api/';
+global.api_key = 'http://192.168.1.5:8000/api/';
 global.token = '';
 const App = () => {
   const [token, setToken] = useState('');
   const [user_data, setData] = useState([]);
   const [isLogin, setIsLogin] = useState(false);
   const [isLoading, setLoading] = useState(true);
-
+  const [subject_id, setId] = useState(1);
+  // const [course_id, setcourse_id] = useEffect("");
   useEffect(() => {
     AsyncStorage.getItem('@auth', (err, result) => {
-      if (JSON.parse(result) != null) {
-        setToken(JSON.parse(result).token);
+      if (JSON.parse(result) != '') {
+        // console.warn('aa', JSON.parse(result));
+        setToken(JSON.parse(result));
         setIsLogin(true);
-        getProfile(JSON.parse(result).token);
+        getProfile(JSON.parse(result));
       } else {
         logout();
       }
@@ -39,22 +41,12 @@ const App = () => {
   };
 
   const logout = () => {
-    {
-      <Toast
-        visible={true}
-        position={50}
-        shadow={false}
-        animation={false}
-        hideOnPress={true}>
-        Loggout
-      </Toast>;
-    }
+    // alert('loddes out');
     setToken('');
-    setData([]);
-    setIsLogin(false);
-    global.token = '';
     AsyncStorage.setItem('@auth', JSON.stringify(''));
     AsyncStorage.setItem('@name', JSON.stringify(''));
+    setData([]);
+    setIsLogin(false);
   };
 
   const getProfile = token => {
@@ -69,7 +61,7 @@ const App = () => {
       .then(response => response.json())
 
       .then(json => {
-        console.warn(json);
+        // console.warn(json);
         if (json.message == 'Unauthenticated.') {
           logout();
         }
@@ -95,6 +87,8 @@ const App = () => {
         logout,
         setToken,
         token: token,
+        setId,
+        subject_id: subject_id,
       }}>
       <NavigationContainer>
         {/* different stack */}
@@ -105,5 +99,4 @@ const App = () => {
     </AuthContext.Provider>
   );
 };
-
 export default App;

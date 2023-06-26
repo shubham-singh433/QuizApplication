@@ -6,18 +6,20 @@ import {RFValue} from 'react-native-responsive-fontsize';
 import {Icon} from 'react-native-elements';
 import Modal from 'react-native-modal';
 import {AuthContext} from '../../AuthContextProvider';
+import Verticalskeleton from './Verticalskeleton';
 // import {color} from 'react-native-elements/dist/helpers';
 
 const VerticalFlatlist = () => {
-  const {token} = useContext(AuthContext);
+  const {token, subject_id, setId} = useContext(AuthContext);
   const [quiz_list, setQuiz] = useState([]);
   const [show, changeShow] = useState(false);
   const [showDesc, changeDesc] = useState(false);
   const [isLoading, setLoading] = useState(false);
 
-  const fetch_quiz = token => {
+  const fetch_quiz = (token, subject_id) => {
+    // console.warn(' subject_id', subject_id);
     setLoading(true);
-    console.warn(token);
+    // console.warn('toekns received at vertical flatlist', token);
     fetch(global.api_key + 'user/course/subject/quiz', {
       method: 'POST',
       headers: {
@@ -26,20 +28,20 @@ const VerticalFlatlist = () => {
         Authorization: token,
       },
       body: JSON.stringify({
-        college_subject_id: '1',
+        college_subject_id: subject_id,
       }),
     })
       .then(response => response.json())
 
       .then(json => {
-        console.warn('quizdata', json);
+        // console.warn('quizdata', json.data);
         if (json.status) {
           if (json.data.length > 0) {
             setQuiz(json.data);
-          } else {
-            setQuiz([]);
+
+            // console.warn('kya bolti tu', quiz_list);
           }
-          console.warn('features state', featured);
+          // console.warn('features state', featured);
         } else {
           setQuiz([]);
         }
@@ -53,7 +55,7 @@ const VerticalFlatlist = () => {
   };
 
   useEffect(() => {
-    fetch_quiz(token);
+    fetch_quiz(token, subject_id);
   }, []);
 
   const renderFlatlist = ({item}) => {
@@ -61,8 +63,8 @@ const VerticalFlatlist = () => {
       <LinearGradient
         colors={['#5071EA', '#04BAFA']}
         style={{
-          height: Dimensions.get('screen').height / 5.5,
-          width: Dimensions.get('screen').width / 1.1,
+          height: Dimensions.get('screen').height / 5,
+          width: Dimensions.get('screen').width / 1.05,
           marginTop: 20,
           borderRadius: 20,
         }}>
@@ -109,13 +111,15 @@ const VerticalFlatlist = () => {
                 </Text>
               </View>
             </View>
+            {/* timer icon */}
             <View
               style={{
-                height: Dimensions.get('screen').height / 15,
+                height: Dimensions.get('screen').height / 14,
                 width: Dimensions.get('screen').width / 3.9,
                 // backgroundColor: 'pink',
                 flexDirection: 'row',
                 alignItems: 'center',
+                // justifyContent: 'flex-start',
                 // alignSelf: 'flex-end',
               }}>
               <View>
@@ -142,11 +146,15 @@ const VerticalFlatlist = () => {
             style={{
               justifyContent: 'center',
               alignItems: 'center',
+              height: Dimensions.get('screen').height / 13,
+              width: Dimensions.get('screen').width / 1.2,
+              paddingLeft: 8,
               // borderRadius: 20,
             }}>
             <Text
               style={{
-                fontSize: RFValue(14, 580),
+                textAlign: 'left',
+                fontSize: RFValue(13, 580),
                 fontFamily: 'Poppins-SemiBold',
                 color: 'white',
               }}>
@@ -155,7 +163,7 @@ const VerticalFlatlist = () => {
           </View>
           <View
             style={{
-              height: Dimensions.get('screen').height / 24,
+              height: Dimensions.get('screen').height / 22,
               width: Dimensions.get('screen').width / 1.2,
               //   backgroundColor: 'yellows',
               //   justifyContent: 'flex-end',
@@ -201,7 +209,7 @@ const VerticalFlatlist = () => {
         justifyContent: 'center',
         // backgroundColor: 'green',
       }}>
-      {/* <Modal
+      <Modal
         isVisible={show}
         animationIn="slideInUp"
         animationOut="slideOutDown"
@@ -297,6 +305,7 @@ const VerticalFlatlist = () => {
 
       <Modal
         isVisible={showDesc}
+        animationType="fade"
         animationIn="slideInUp"
         animationOut="slideOutDown"
         onBackdropPress={() => changeShow(!showDesc)}>
@@ -349,7 +358,7 @@ const VerticalFlatlist = () => {
                       fontFamily: 'Poppins-Bold',
                       color: 'black',
                     }}>
-                    {quiz_list.Quiz_name}
+                    {/* {quiz_list[0].subject_quiz_name} */}
                   </Text>
                 </View>
               </View>
@@ -408,7 +417,9 @@ const VerticalFlatlist = () => {
               <View>
                 <Icon name="ellipse" type="ionicon" size={8} color={'black'} />
               </View>
-              {Data[0].instruction.ins}
+              {/* {quiz_list[0].quiz_instruction
+                ? quiz_list[0].quiz_instruction.instructions
+                : ' Once you have answered all of the questions in the quiz, select “Finish attempt. '} */}
             </Text>
             <Pressable
               onPress={() => {
@@ -439,15 +450,18 @@ const VerticalFlatlist = () => {
             </Pressable>
           </View>
         </View>
-      </Modal> */}
-
-      <FlatList
-        showsHorizontalScrollIndicator={false}
-        data={quiz_list}
-        renderItem={renderFlatlist}
-        keyExtractor={item => item.id}
-        horizontal={false}
-      />
+      </Modal>
+      {isLoading ? (
+        <Verticalskeleton />
+      ) : (
+        <FlatList
+          showsHorizontalScrollIndicator={false}
+          data={quiz_list}
+          renderItem={renderFlatlist}
+          keyExtractor={item => item.id}
+          horizontal={false}
+        />
+      )}
     </View>
   );
 };

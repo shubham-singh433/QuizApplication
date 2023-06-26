@@ -12,7 +12,7 @@ import {Signupstyle} from '../styles/Signupstyle';
 // import skeleton from './skeleton';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {AuthContext} from '../../AuthContextProvider';
-// import skeleton from './skeleton';
+import Skeleton from './Skeleton';
 
 // const [Data, setData] = useState([]);
 const HorizontalFlatList = () => {
@@ -27,11 +27,10 @@ const HorizontalFlatList = () => {
     );
   };
   const [featured, setFeatured] = useState([]);
-  const [isloading, setLoading] = useState(false);
+  const [isloading, setLoading] = useState(true);
 
   const fetch_subjects = token => {
-    setLoading(true);
-    console.warn(isloading);
+    alert('hi welcome back');
     fetch(global.api_key + 'user/course/subject', {
       method: 'POST',
       headers: {
@@ -44,12 +43,11 @@ const HorizontalFlatList = () => {
       .then(response => response.json())
 
       .then(json => {
-        console.warn(json);
         if (json.status) {
+          console.warn('len', json.data.length);
           if (json.data.length > 0) {
             setFeatured(json.data);
-          } else {
-            setFeatured([]);
+            console.warn('course', json, data);
           }
           console.warn('features state', featured);
         } else {
@@ -57,7 +55,7 @@ const HorizontalFlatList = () => {
         }
       })
       .catch(error => {
-        console.log(error);
+        console.log('err', error);
       })
       .finally(() => {
         setLoading(false);
@@ -65,6 +63,7 @@ const HorizontalFlatList = () => {
   };
 
   useEffect(() => {
+    // console.warn('token', token);
     fetch_subjects(token);
   }, []);
 
@@ -82,10 +81,10 @@ const HorizontalFlatList = () => {
         // backgroundColor: 'green',
       }}>
       {isloading ? (
-        // <skeleton />
-        <></>
+        <Skeleton />
       ) : (
-        // <ActivityIndicator size={'large'} color="red" />
+        // <ActivityIndicator size="large" />
+
         <FlatList
           showsHorizontalScrollIndicator={false}
           data={featured}

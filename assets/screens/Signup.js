@@ -13,6 +13,16 @@ const Signup = ({navigation}) => {
   const [mail, setMail] = useState('');
   const [password, setPassword] = useState('');
   const {login, logout, setToken} = useContext(AuthContext);
+  const [isvalid, setValid] = useState(false);
+
+  const emailRegx = () => {
+    var re = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/;
+    var isvalid = re.test(this.state.email);
+
+    if (isvalid) {
+      setValid(true);
+    }
+  };
 
   const logined = () => {
     fetch(global.api_key + 'user/login', {
@@ -29,7 +39,7 @@ const Signup = ({navigation}) => {
       .then(response => response.json())
 
       .then(json => {
-        console.warn(json);
+        // console.warn(json);
         if (json.status) {
           setToken(json.token);
           global.token = json.token;
@@ -40,6 +50,12 @@ const Signup = ({navigation}) => {
 
           // console.warn('firstname', json.firstname);
         } else {
+          setToken('');
+          setData([]);
+          setIsLogin(false);
+          global.token = '';
+          AsyncStorage.setItem('@auth', JSON.stringify(''));
+          AsyncStorage.setItem('@name', JSON.stringify(''));
           // if we did not recieve any data then
           logout();
         }
@@ -53,17 +69,17 @@ const Signup = ({navigation}) => {
   };
 
   // get name stored in  async storage
-  const getData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('@auth');
-      console.warn('getdata', value);
-      if (value !== null) {
-        // setToken(value);
-      }
-    } catch (e) {
-      console.warn(e);
-    }
-  };
+  // const getData = async () => {
+  //   try {
+  //     const value = await AsyncStorage.getItem('@auth');
+  //     console.warn('getdata', value);
+  //     if (value !== null) {
+  //       // setToken(value);
+  //     }
+  //   } catch (e) {
+  //     console.warn(e);
+  //   }
+  // };
 
   return (
     <>

@@ -77,7 +77,7 @@ export const Signupstyle = StyleSheet.create({
     fontFamily: 'Poppins-Regular',
   },
   headerleft_divider: {
-    width: Dimensions.get('screen').width / 2.2,
+    width: Dimensions.get('screen').width / 1.5,
     height: Dimensions.get('screen').width / 9,
 
     justifyContent: 'center',
@@ -90,7 +90,7 @@ export const Signupstyle = StyleSheet.create({
   },
   header_text: {
     color: 'white',
-    fontSize: RFValue(18, 580),
+    fontSize: RFValue(14, 580),
     fontFamily: 'Poppins-SemiBold',
   },
   headerContainer: {
@@ -158,8 +158,9 @@ export const Signupstyle = StyleSheet.create({
   },
   sub_btn: {
     // marginTop: '6%',
-    width: Dimensions.get('screen').width / 3.1,
-    height: Dimensions.get('screen').height / 18,
+    width: Dimensions.get('screen').width / 3,
+    // height: Dimensions.get('screen').height / 18,
+    padding:5,
     alignSelf: 'center',
     alignItems: 'center',
     backgroundColor: 'white',
