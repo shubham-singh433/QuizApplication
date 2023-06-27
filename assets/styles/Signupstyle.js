@@ -18,6 +18,7 @@ export const Signupstyle = StyleSheet.create({
     backgroundColor: 'white',
   },
   login_view: {
+    flexDirection:'row',
     justifyContent: 'center',
     alignItems: 'center',
     height: Dimensions.get('screen').width / 3.8,

@@ -8,8 +8,10 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-root-toast';
 import {AuthContext} from '../../AuthContextProvider';
+import { useNavigation } from '@react-navigation/native';
 
-const Signup = ({navigation}) => {
+const Signup = () => {
+  const navigation=useNavigation();
   const [mail, setMail] = useState('');
   const [password, setPassword] = useState('');
   const {login, logout, setToken} = useContext(AuthContext);
@@ -95,7 +97,12 @@ const Signup = ({navigation}) => {
         <ScrollView>
           <View style={Signupstyle.external_view}>
             <View style={Signupstyle.login_view}>
-              <Text style={Signupstyle.mainText}>Login/Sign up</Text>
+              <Text style={Signupstyle.mainText}>Login</Text>
+              <Pressable onPress={()=>{
+                navigation.navigate('Registration');
+              }}>
+                <Text style={Signupstyle.mainText}>/Register </Text>
+              </Pressable>
             </View>
             <View style={Signupstyle.container}>
               <TextInput
@@ -121,12 +128,12 @@ const Signup = ({navigation}) => {
               <Pressable
                 onPress={() => {
                   logined();
-                  if (global.token > 0) {
-                    navigation.navigate('Home');
-                    Toast.show('Succesfully loged in ', Toast.LONG, {
-                      backgroundColor: 'green',
-                    });
-                  }
+                  // if (global.token > 0) {
+                  //   navigation.navigate('Home');
+                  //   Toast.show('Succesfully loged in ', Toast.LONG, {
+                  //     backgroundColor: 'green',
+                  //   });
+                  // }
                 }}
                 style={Signupstyle.button}>
                 <Text style={Signupstyle.btn_text}>Login</Text>

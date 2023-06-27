@@ -1,19 +1,16 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
-//import AntDesign from '@expo/vector-icons/AntDesign';
-import {Icon, CheckBox} from 'react-native-elements';
 
 const DropdownComponent = ({getinfo}) => {
-
-  const [college_id, setCollege_id] = useState('');
-  const [course_id, setCourse_id] = useState('');
   const [isFocus, setIsFocus] = useState(false);
-  const [isFocus2, setIsFocus2] = useState(false);
-  const [colleges, setColleges] = useState([]);
-  const [Courses, setCourses] = useState([]);
+  const [isFocus2, setIsFocus2] = useState(false); 
+  const [colleges, setColleges] = useState([]);  //Data for college Dropdown
+  const [Courses, setCourses] = useState([]);  //Data for courses Dropdown
 
-  
+  useEffect(() => {
+    fetch_collegeName();
+  }, []);
 
   const fetch_collegeName = () => {
     fetch(global.api + 'user/colleges/all', {
@@ -28,8 +25,7 @@ const DropdownComponent = ({getinfo}) => {
         // console.warn(json)
         if (json.status) {
           setColleges(json.data);
-          fetch_courses(json.data[0].id)
-
+          // fetch_courses(json.data[0].id);
         } else {
           setColleges([]);
         }
@@ -42,7 +38,7 @@ const DropdownComponent = ({getinfo}) => {
       });
   };
 
-  const fetch_courses = (id) => {
+  const fetch_courses = id => {
     // alert('hi')
     fetch(global.api + 'user/courses/all', {
       method: 'POST',
@@ -70,18 +66,12 @@ const DropdownComponent = ({getinfo}) => {
       .finally(() => {
         // this.setState({isLoading: false});
       });
-  };  
-
-  useEffect(() => {
-    fetch_collegeName();
-  }, []);
+  };
 
   return (
-    <View >
+    <View>
       <Dropdown
-        style={[
-          styles.dropdown,
-        ]}
+        style={[styles.dropdown]}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
@@ -99,8 +89,8 @@ const DropdownComponent = ({getinfo}) => {
           setIsFocus(false);
         }}
         onChange={item => {
-          console.warn(item)
-          setCollege_id(item.id);
+          console.warn(item);
+          // setCollege_id(item.id);
           setIsFocus(false);
           // alert(item.id)
           fetch_courses(item.id);
@@ -109,9 +99,7 @@ const DropdownComponent = ({getinfo}) => {
       {/* {true ?alert(value):<></>} */}
 
       <Dropdown
-        style={[
-          styles.dropdown,
-        ]}
+        style={[styles.dropdown]}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
@@ -131,8 +119,8 @@ const DropdownComponent = ({getinfo}) => {
         onChange={item => {
           // setValue2(item.course_name);
           setIsFocus2(false);
-          setCourse_id(item.id);
-          getinfo(college_id,course_id);
+          // setCourse_id(item.id);
+          getinfo(item.college_id, item.id); //this is function passed as a prop to this component via Registration.js
         }}
       />
     </View>

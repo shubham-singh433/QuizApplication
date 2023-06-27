@@ -197,6 +197,38 @@ const VerticalFlatlist = () => {
       </LinearGradient>
     );
   };
+  const start_quiz=(token,subject_id)=>{
+      fetch(global.api_key + 'users/quiz-starts', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
+        body: JSON.stringify({
+          college_subject_id: subject_id,
+        }),
+      })
+        .then(response => response.json())
+
+        .then(json => {
+          // console.warn('quizdata', json.data);
+          if (json.status) {
+           
+            // console.warn('features state', featured);
+          } else {
+            
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        })
+        .finally(() => {
+          
+        });
+
+
+  }
 
   return (
     <View
@@ -423,6 +455,7 @@ const VerticalFlatlist = () => {
             </Text>
             <Pressable
               onPress={() => {
+                start_quiz();
                 changeDesc(!showDesc);
               }}
               style={{

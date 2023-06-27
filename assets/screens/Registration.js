@@ -9,15 +9,17 @@ import {
   Dimensions,
   Button,
 } from 'react-native';
-import {Styler} from './RegistrationCSS';
+import {Styler} from '../styles/RegistrationCSS';
 import LinearGradient from 'react-native-linear-gradient';
 import {Input} from 'react-native-elements';
 import DropdownComponent from './dropdown';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
-import { useEffect } from 'react';
+import {useEffect} from 'react';
+import {useNavigation} from '@react-navigation/native';
 
-const Registration = ({navigation}) => {
+const Registration = () => {
+  const navigation=useNavigation();
   const [college_id, setCollege_id] = useState('');
   const [course_id, setCourse_id] = useState('');
   const [firstname, setFirstName] = useState('');
@@ -40,13 +42,12 @@ const Registration = ({navigation}) => {
     setDatePickerVisibility(false);
   };
 
-  const handleConfirm = (date) => {
-    const monthAndYear = moment(date).format("DD/MM/YYYY");
+  const handleConfirm = date => {
+    const monthAndYear = moment(date).format('DD/MM/YYYY');
     setDOB(monthAndYear);
     // console.warn(date);
     hideDatePicker();
   };
-
 
   const Register = () => {
     // alert('hi')
@@ -59,28 +60,27 @@ const Registration = ({navigation}) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        firstname:firstname,
-        lastname:Lastname,
-        email:email,
-        password:Password,
-        confirm_password:Password,
-        date_of_birth:DOB,
-        contact:ContactNo,
-        alternate_contact:AlternateContactNo,
+        firstname: firstname,
+        lastname: Lastname,
+        email: email,
+        password: Password,
+        confirm_password: Password,
+        date_of_birth: DOB,
+        contact: ContactNo,
+        alternate_contact: AlternateContactNo,
         college_id: college_id,
-        status: "active",
+        status: 'active',
         course_id: course_id,
       }),
     })
       .then(response => response.json())
       .then(json => {
-        console.warn(json)
+        console.warn(json);
         if (json.status) {
-          // alert('finally')
-          // setCourses(json.data)
-          console.warn(json.data.updated_at)
+          navigation.navigate('Signup');
+      
         } else {
-          // setCourses([]);
+         alert(error);
         }
       })
       .catch(error => {
@@ -89,59 +89,50 @@ const Registration = ({navigation}) => {
       .finally(() => {
         // this.setState({isLoading: false});
       });
-  };  
+  };
 
-  const getCollegeAndCourseId=(college,course)=>{
+  const getCollegeAndCourseId = (college, course) => {
     setCollege_id(college);
     setCourse_id(course);
-  }
+  };
 
-
-  const textvalidation = (text) => {
-    const regex = /^[a-zA-Z]+$/ ;
-    if(!regex.test(text))
-    {
+  const textvalidation = text => {
+    const regex = /^[a-zA-Z]+$/;
+    if (!regex.test(text)) {
       console.warn('invalid name');
-    }
-    else console.warn('ok')
-  }
+    } else console.warn('ok');
+  };
 
-  const EmailValidation = (email) => {
-    const regex =/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if(!regex.test(email))
-    {
+  const EmailValidation = email => {
+    const regex =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!regex.test(email)) {
       console.warn('invalid email');
-    }
-    else console.warn('ok')
-  }
+    } else console.warn('ok');
+  };
 
-  const MobileValidation = (num) => {
-    const regex =/^[0]?[6789]\d{9}$/ ;
-    if(!regex.test(num))
-    {
+  const MobileValidation = num => {
+    const regex = /^[0]?[6789]\d{9}$/;
+    if (!regex.test(num)) {
       console.warn('invalid number');
-    }
-    else console.warn('ok')
-  }
+    } else console.warn('ok');
+  };
 
-  
-  const PasswordValidation = (pswd) => {
+  const PasswordValidation = pswd => {
     const regex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
-    if(!regex.test(pswd))
-    {
-      console.warn('password should be 6 to 16 character long consisting at least one number and one special character');
-    }
-    else console.warn('ok')
-  }
+    if (!regex.test(pswd)) {
+      console.warn(
+        'password should be 6 to 16 character long consisting at least one number and one special character',
+      );
+    } else console.warn('ok');
+  };
 
-  const PasswordConfirmation = (pswd) => {
-    if(pswd!=Password)
-    {
+  const PasswordConfirmation = pswd => {
+    if (pswd != Password) {
       console.warn("password didn't match");
-    }
-    else console.warn('matched')
-  }
-  
+    } else console.warn('matched');
+  };
+
   // useEffect(()=>{
   //   console.warn(moment(new Date()).format("DD/MM/YYYY"))
   // },[])
@@ -151,7 +142,7 @@ const Registration = ({navigation}) => {
       <LinearGradient
         colors={['#28A8CD', '#1B6AA5']}
         style={Styler.linearGradient}>
-        <Image source={require('../imgs/logo.png')} style={Styler.logo} />
+        <Image source={require('../src/logo.png')} style={Styler.logo} />
       </LinearGradient>
       <ScrollView>
         <Text style={Styler.font}> Register </Text>
@@ -160,7 +151,7 @@ const Registration = ({navigation}) => {
             placeholder="First Name"
             value={firstname}
             onChangeText={setFirstName}
-            onBlur={()=>textvalidation(firstname)}
+            onBlur={() => textvalidation(firstname)}
             // onBlur={()=>{alert(firstname);}}
           />
         </View>
@@ -169,7 +160,7 @@ const Registration = ({navigation}) => {
             placeholder="Last Name"
             value={Lastname}
             onChangeText={setLastName}
-            onBlur={()=>textvalidation(Lastname)}
+            onBlur={() => textvalidation(Lastname)}
             // onBlur={()=>{alert(firstname);}}
           />
         </View>
@@ -181,7 +172,7 @@ const Registration = ({navigation}) => {
             keyboardType="email-address"
             value={email}
             onChangeText={setEmail}
-            onBlur={()=>EmailValidation(email)}
+            onBlur={() => EmailValidation(email)}
           />
         </View>
         <View style={Styler.InputBox}>
@@ -191,7 +182,7 @@ const Registration = ({navigation}) => {
             // keyboardType="number"
             keyboardType={'phone-pad'}
             onChangeText={setContactNo}
-            onBlur={()=>MobileValidation(ContactNo)}
+            onBlur={() => MobileValidation(ContactNo)}
           />
         </View>
         <View style={Styler.InputBox}>
@@ -200,7 +191,7 @@ const Registration = ({navigation}) => {
             keyboardType={'phone-pad'}
             value={AlternateContactNo}
             onChangeText={setAlternateContactNo}
-            onBlur={()=>MobileValidation(AlternateContactNo)}
+            onBlur={() => MobileValidation(AlternateContactNo)}
           />
         </View>
 
@@ -208,7 +199,6 @@ const Registration = ({navigation}) => {
           <Text>{DOB}</Text>
         </TouchableOpacity>
 
-        
         <DateTimePickerModal
           // date={DOB}
           isVisible={isDatePickerVisible}
@@ -224,7 +214,7 @@ const Registration = ({navigation}) => {
           />
         </View> */}
 
-        <DropdownComponent getinfo={getCollegeAndCourseId} hello={'name'}/>
+        <DropdownComponent getinfo={getCollegeAndCourseId} hello={'name'} />
 
         {/* <View style={Styler.InputBox}>
           <TextInput placeholder="Course Name" 
@@ -239,7 +229,7 @@ const Registration = ({navigation}) => {
             value={Password}
             onChangeText={setPassword}
             secureTextEntry={true}
-            onBlur={()=>PasswordValidation(Password)}
+            onBlur={() => PasswordValidation(Password)}
           />
         </View>
         <View style={Styler.InputBox}>
@@ -248,14 +238,14 @@ const Registration = ({navigation}) => {
             value={confirmPassword}
             onChangeText={setConfirmPassword}
             secureTextEntry={true}
-            onBlur={()=>PasswordConfirmation(confirmPassword)}
+            onBlur={() => PasswordConfirmation(confirmPassword)}
           />
         </View>
 
-        <TouchableOpacity onPress={() => 
-          // navigation.navigate('quiz')
-          Register()
-        }>
+        <TouchableOpacity
+          onPress={() => {
+            Register();
+          }}>
           <LinearGradient
             colors={['#28A8CD', '#1B6AA5']}
             style={{

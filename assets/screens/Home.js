@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext, startTransition} from 'react';
 import {
   ScrollView,
   FlatList,
@@ -22,6 +22,7 @@ import MyProfileScreen from './MyProfileScreen';
 import Modal from 'react-native-modal';
 import Verticalskeleton from './Verticalskeleton';
 import Skeleton from './Skeleton';
+import Quiz from './Quiz';
 import {useNavigation} from '@react-navigation/native';
 
 //home component
@@ -300,6 +301,33 @@ const Home = props => {
       </LinearGradient>
     );
   };
+  const start_quiz = (token, selected_id,navigation) => {
+     fetch(global.api_key + 'users/quiz-starts', {
+       method: 'POST',
+       headers: {
+         Accept: 'application/json',
+         'Content-Type': 'application/json',
+         Authorization: token,
+       },
+       body: JSON.stringify({
+         subject_quiz_id: selected_id,
+       }),
+     })
+       .then(response => response.json())
+
+       .then(json => {
+         console.warn(json);
+         if (json.status) {
+         
+           navigation.navigate('Quiz',quiz_id={selected_cat});
+         } else {
+         }
+       })
+       .catch(error => {
+         console.log(error);
+       })
+       .finally(() => {});
+   };
 
   //home component render
   return (
@@ -599,7 +627,9 @@ const Home = props => {
               </Text>
               <Pressable
                 onPress={() => {
+                  start_quiz(token,selected_cat,navigation);
                   changeDesc(!showDesc);
+                    
                 }}
                 style={{
                   width: Dimensions.get('screen').width / 3.2,
@@ -635,460 +665,494 @@ const Home = props => {
 export default Home;
 
 // horizonatl flATLIST
-const HorizontalFlatList = props => {
-  const flatlistHorizontal = ({item}) => {
-    return (
-      <Pressable
-        style={[
-          Signupstyle.sub_btn,
-          {backgroundColor: props.selected_cat == item.id ? 'blue' : 'white'},
-        ]}
-        onPress={() => props.fetch_quiz(item.id)}>
-        <View>
-          <Text style={Signupstyle.sub_text}>{item.subject_name}</Text>
-        </View>
-      </Pressable>
-    );
-  };
+// const HorizontalFlatList = props => {
+//   const flatlistHorizontal = ({item}) => {
+//     return (
+//       <Pressable
+//         style={[
+//           Signupstyle.sub_btn,
+//           {backgroundColor: props.selected_cat == item.id ? 'blue' : 'white'},
+//         ]}
+//         onPress={() => props.fetch_quiz(item.id)}>
+//         <View>
+//           <Text style={Signupstyle.sub_text}>{item.subject_name}</Text>
+//         </View>
+//       </Pressable>
+//     );
+//   };
 
-  return (
-    <View
-      style={{
-        flex: 1,
-        // backgroundColor: 'red',
-        alignItems: 'center',
-        // marginHorizontal: '4%',
-        alignSelf: 'center',
-        height: Dimensions.get('screen').height / 10,
-        width: Dimensions.get('screen').width / 1.1,
-        justifyContent: 'center',
-      }}>
-      {props.isLoading ? (
-        <Skeleton />
-      ) : (
-        <FlatList
-          showsHorizontalScrollIndicator={false}
-          data={props.featured}
-          renderItem={flatlistHorizontal}
-          keyExtractor={item => item.id}
-          horizontal={true}
-        />
-      )}
-    </View>
-  );
-};
+//   return (
+//     <View
+//       style={{
+//         flex: 1,
+//         // backgroundColor: 'red',
+//         alignItems: 'center',
+//         // marginHorizontal: '4%',
+//         alignSelf: 'center',
+//         height: Dimensions.get('screen').height / 10,
+//         width: Dimensions.get('screen').width / 1.1,
+//         justifyContent: 'center',
+//       }}>
+//       {props.isLoading ? (
+//         <Skeleton />
+//       ) : (
+//         <FlatList
+//           showsHorizontalScrollIndicator={false}
+//           data={props.featured}
+//           renderItem={flatlistHorizontal}
+//           keyExtractor={item => item.id}
+//           horizontal={true}
+//         />
+//       )}
+//     </View>
+//   );
+// };
 
 // vertical flast list
-const VerticalFlatlist = props => {
-  const [show, changeShow] = useState(false);
-  const [showDesc, changeDesc] = useState(false);
+// const VerticalFlatlist = props => {
+//   const [show, changeShow] = useState(false);
+//   const [showDesc, changeDesc] = useState(false);
+//   const navigation = useNavigation();
 
-  const renderFlatlist = ({item}) => {
-    return (
-      <LinearGradient
-        colors={['#28A8CD', '#1B6AA5']}
-        style={{
-          height: Dimensions.get('screen').height / 5,
-          width: Dimensions.get('screen').width / 1.05,
-          marginTop: 20,
-          borderRadius: 20,
-        }}>
-        <View
-          style={{
-            height: Dimensions.get('screen').height / 5.5,
-            width: Dimensions.get('screen').width / 1.1,
-          }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              width: Dimensions.get('screen').width / 1.1,
-              height: Dimensions.get('screen').height / 15,
-              justifyContent: 'space-between',
+//   const renderFlatlist = ({item}) => {
+//     return (
+//       <LinearGradient
+//         colors={['#28A8CD', '#1B6AA5']}
+//         style={{
+//           height: Dimensions.get('screen').height / 5,
+//           width: Dimensions.get('screen').width / 1.05,
+//           marginTop: 20,
+//           borderRadius: 20,
+//         }}>
+//         <View
+//           style={{
+//             height: Dimensions.get('screen').height / 5.5,
+//             width: Dimensions.get('screen').width / 1.1,
+//           }}>
+//           <View
+//             style={{
+//               flexDirection: 'row',
+//               width: Dimensions.get('screen').width / 1.1,
+//               height: Dimensions.get('screen').height / 15,
+//               justifyContent: 'space-between',
 
-              //   backgroundColor: 'red',
-            }}>
-            <View
-              style={{
-                height: Dimensions.get('screen').height / 15,
-                width: Dimensions.get('screen').width / 1.8,
-                // backgroundColor: 'green',
-                justifyContent: 'center',
-                flexDirection: 'row',
-                justifyContent: 'space-evenly',
-                alignItems: 'center',
-              }}>
-              <View>
-                <Icon
-                  name="play-circle-outline"
-                  type="ionicon"
-                  size={30}
-                  color={'white'}
-                />
-              </View>
-              <View>
-                <Text
-                  style={{
-                    fontSize: RFValue(18, 580),
-                    fontFamily: 'Poppins-SemiBold',
-                    color: 'white',
-                  }}>
-                  {item.subject_quiz_name}
-                </Text>
-              </View>
-            </View>
-            {/* timer icon */}
-            <View
-              style={{
-                height: Dimensions.get('screen').height / 14,
-                width: Dimensions.get('screen').width / 3.9,
-                // backgroundColor: 'pink',
-                flexDirection: 'row',
-                alignItems: 'center',
-                // justifyContent: 'flex-start',
-                // alignSelf: 'flex-end',
-              }}>
-              <View>
-                <Icon
-                  name="timer-outline"
-                  type="ionicon"
-                  size={20}
-                  color={'white'}
-                />
-              </View>
-              <View>
-                <Text
-                  style={{
-                    fontSize: RFValue(14, 580),
-                    fontFamily: 'Poppins-SemiBold',
-                    color: 'white',
-                  }}>
-                  {'30 min'}
-                </Text>
-              </View>
-            </View>
-          </View>
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: Dimensions.get('screen').height / 13,
-              width: Dimensions.get('screen').width / 1.2,
-              paddingLeft: 8,
-              // borderRadius: 20,
-            }}>
-            {item.quizdescription != null ? (
-              <Text
-                style={{
-                  textAlign: 'left',
-                  fontSize: RFValue(13, 580),
-                  fontFamily: 'Poppins-SemiBold',
-                  color: 'white',
-                }}>
-                {item.quizdescription.quiz_description}
-              </Text>
-            ) : null}
-          </View>
-          <View
-            style={{
-              height: Dimensions.get('screen').height / 22,
-              width: Dimensions.get('screen').width / 1.2,
-              //   backgroundColor: 'yellows',
-              //   justifyContent: 'flex-end',
-              alignSelf: 'center',
-              alignItems: 'flex-end',
-              justifyContent: 'center',
-            }}>
-            <Pressable
-              onPress={() => {
-                changeShow(!show);
-              }}
-              style={{
-                height: Dimensions.get('screen').height / 22,
-                width: Dimensions.get('screen').width / 3.5,
-                backgroundColor: '#CBE7FF',
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderRadius: 10,
-              }}>
-              <Text
-                style={{
-                  fontSize: RFValue(14, 580),
-                  fontFamily: 'Poppins-SemiBold',
-                  color: '#1B6AA5',
-                }}>
-                Start Quiz
-              </Text>
-            </Pressable>
-          </View>
-        </View>
-      </LinearGradient>
-    );
-  };
+//               //   backgroundColor: 'red',
+//             }}>
+//             <View
+//               style={{
+//                 height: Dimensions.get('screen').height / 15,
+//                 width: Dimensions.get('screen').width / 1.8,
+//                 // backgroundColor: 'green',
+//                 justifyContent: 'center',
+//                 flexDirection: 'row',
+//                 justifyContent: 'space-evenly',
+//                 alignItems: 'center',
+//               }}>
+//               <View>
+//                 <Icon
+//                   name="play-circle-outline"
+//                   type="ionicon"
+//                   size={30}
+//                   color={'white'}
+//                 />
+//               </View>
+//               <View>
+//                 <Text
+//                   style={{
+//                     fontSize: RFValue(18, 580),
+//                     fontFamily: 'Poppins-SemiBold',
+//                     color: 'white',
+//                   }}>
+//                   {item.subject_quiz_name}
+//                 </Text>
+//               </View>
+//             </View>
+//             {/* timer icon */}
+//             <View
+//               style={{
+//                 height: Dimensions.get('screen').height / 14,
+//                 width: Dimensions.get('screen').width / 3.9,
+//                 // backgroundColor: 'pink',
+//                 flexDirection: 'row',
+//                 alignItems: 'center',
+//                 // justifyContent: 'flex-start',
+//                 // alignSelf: 'flex-end',
+//               }}>
+//               <View>
+//                 <Icon
+//                   name="timer-outline"
+//                   type="ionicon"
+//                   size={20}
+//                   color={'white'}
+//                 />
+//               </View>
+//               <View>
+//                 <Text
+//                   style={{
+//                     fontSize: RFValue(14, 580),
+//                     fontFamily: 'Poppins-SemiBold',
+//                     color: 'white',
+//                   }}>
+//                   {'30 min'}
+//                 </Text>
+//               </View>
+//             </View>
+//           </View>
+//           <View
+//             style={{
+//               justifyContent: 'center',
+//               alignItems: 'center',
+//               height: Dimensions.get('screen').height / 13,
+//               width: Dimensions.get('screen').width / 1.2,
+//               paddingLeft: 8,
+//               // borderRadius: 20,
+//             }}>
+//             {item.quizdescription != null ? (
+//               <Text
+//                 style={{
+//                   textAlign: 'left',
+//                   fontSize: RFValue(13, 580),
+//                   fontFamily: 'Poppins-SemiBold',
+//                   color: 'white',
+//                 }}>
+//                 {item.quizdescription.quiz_description}
+//               </Text>
+//             ) : null}
+//           </View>
+//           <View
+//             style={{
+//               height: Dimensions.get('screen').height / 22,
+//               width: Dimensions.get('screen').width / 1.2,
+//               //   backgroundColor: 'yellows',
+//               //   justifyContent: 'flex-end',
+//               alignSelf: 'center',
+//               alignItems: 'flex-end',
+//               justifyContent: 'center',
+//             }}>
+//             <Pressable
+//               onPress={() => {
+//                 changeShow(!show);
+//               }}
+//               style={{
+//                 height: Dimensions.get('screen').height / 22,
+//                 width: Dimensions.get('screen').width / 3.5,
+//                 backgroundColor: '#CBE7FF',
+//                 justifyContent: 'center',
+//                 alignItems: 'center',
+//                 borderRadius: 10,
+//               }}>
+//               <Text
+//                 style={{
+//                   fontSize: RFValue(14, 580),
+//                   fontFamily: 'Poppins-SemiBold',
+//                   color: '#1B6AA5',
+//                 }}>
+//                 Start Quiz
+//               </Text>
+//             </Pressable>
+//           </View>
+//         </View>
+//       </LinearGradient>
+//     );
+//   };
 
-  return (
-    <View
-      style={{
-        flex: 1,
-        // backgroundColor: 'red',
-        alignItems: 'center',
-        marginHorizontal: '2%',
-        // height: Dimensions.get('screen').height / 10,
-        justifyContent: 'center',
-        // backgroundColor: 'green',
-      }}>
-      <Modal
-        isVisible={show}
-        animationIn="slideInUp"
-        animationOut="slideOutDown"
-        onBackdropPress={() => changeShow(!show)}>
-        <View style={Signupstyle.centeredView}>
-          <View style={Signupstyle.modalView}>
-            <View
-              style={{
-                width: Dimensions.get('screen').width / 1.1,
-                // justifyContent: 'flex-end',
-                alignItems: 'flex-end',
-              }}>
-              <Pressable
-                onPress={() => {
-                  changeShow(!show);
-                }}>
-                <Icon name="close-circle-outline" type="ionicon" size={35} />
-              </Pressable>
-            </View>
-            <View>
-              <Text
-                style={{
-                  fontSize: RFValue(15, 580),
-                  fontFamily: 'Poppins-SemiBold',
-                  color: 'black',
-                  textAlign: 'center',
-                }}>
-                Are you sure you want to start the Quiz
-              </Text>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-evenly',
-              }}>
-              <Pressable
-                onPress={() => {
-                  changeShow(!show);
-                  changeDesc(!showDesc);
-                }}
-                style={{
-                  width: Dimensions.get('screen').width / 3.1,
-                  height: Dimensions.get('screen').height / 18,
-                  alignSelf: 'center',
-                  alignItems: 'center',
-                  backgroundColor: '#437E14',
-                  opacity: 0.7,
-                  justifyContent: 'center',
-                  borderRadius: 25,
-                  marginLeft: 10,
-                  shadowColor: 'black',
-                  elevation: 4,
-                }}>
-                <Text
-                  style={{
-                    fontSize: RFValue(17, 580),
-                    fontFamily: 'Poppins-SemiBold',
-                    color: 'white',
-                  }}>
-                  Yes
-                </Text>
-              </Pressable>
-              <Pressable
-                onPress={() => {
-                  changeShow(!show);
-                }}
-                style={{
-                  width: Dimensions.get('screen').width / 3.1,
-                  height: Dimensions.get('screen').height / 18,
-                  alignSelf: 'center',
-                  alignItems: 'center',
-                  backgroundColor: '#F83030',
-                  opacity: 0.7,
-                  justifyContent: 'center',
-                  borderRadius: 25,
-                  marginLeft: 10,
-                  shadowColor: 'black',
-                  elevation: 4,
-                }}>
-                <Text
-                  style={{
-                    fontSize: RFValue(17, 580),
-                    fontFamily: 'Poppins-SemiBold',
-                    color: 'white',
-                  }}>
-                  No
-                </Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      </Modal>
 
-      <Modal
-        isVisible={showDesc}
-        animationType="fade"
-        animationIn="slideInUp"
-        animationOut="slideOutDown"
-        onBackdropPress={() => changeShow(!showDesc)}>
-        <View style={Signupstyle.centeredView}>
-          <View style={Signupstyle.modalView}>
-            <View
-              style={{
-                width: Dimensions.get('screen').width / 1.1,
-                // justifyContent: 'flex-end',
-                alignItems: 'flex-end',
-              }}>
-              <Pressable
-                onPress={() => {
-                  changeDesc(!showDesc);
-                }}>
-                <Icon name="close-circle-outline" type="ionicon" size={35} />
-              </Pressable>
-            </View>
+//    const start_quiz = (token, subject_id) => {
+//      fetch(global.api_key + 'users/quiz-starts', {
+//        method: 'POST',
+//        headers: {
+//          Accept: 'application/json',
+//          'Content-Type': 'application/json',
+//          Authorization: token,
+//        },
+//        body: JSON.stringify({
+//          college_subject_id: subject_id,
+//        }),
+//      })
+//        .then(response => response.json())
 
-            <View
-              style={{
-                flexDirection: 'row',
-                width: Dimensions.get('screen').width / 1.1,
-                height: Dimensions.get('screen').height / 15,
-                justifyContent: 'space-between',
-                // backgroundColor: 'red',
-              }}>
-              <View
-                style={{
-                  height: Dimensions.get('screen').height / 15,
-                  width: Dimensions.get('screen').width / 1.8,
-                  // backgroundColor: 'green',
-                  justifyContent: 'center',
-                  flexDirection: 'row',
-                  justifyContent: 'space-evenly',
-                  alignItems: 'center',
-                }}>
-                <View>
-                  <Icon
-                    name="play-circle-outline"
-                    type="ionicon"
-                    size={35}
-                    color={'black'}
-                  />
-                </View>
-                <View>
-                  <Text
-                    style={{
-                      fontSize: RFValue(18, 580),
-                      fontFamily: 'Poppins-Bold',
-                      color: 'black',
-                    }}>
-                    {/* {quiz_list[0].subject_quiz_name} */}
-                  </Text>
-                </View>
-              </View>
-              <View
-                style={{
-                  height: Dimensions.get('screen').height / 15,
-                  width: Dimensions.get('screen').width / 2.8,
-                  // backgroundColor: 'green',
-                  justifyContent: 'center',
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <View>
-                  <Icon
-                    name="timer-outline"
-                    type="ionicon"
-                    size={30}
-                    color={'black'}
-                  />
-                </View>
-                <View>
-                  <Text
-                    style={{
-                      fontSize: RFValue(14, 580),
-                      fontFamily: 'Poppins-SemiBold',
-                      color: 'black',
-                    }}>
-                    {'30 min'}
-                  </Text>
-                </View>
-              </View>
-            </View>
-            <View
-              style={{
-                alignSelf: 'flex-start',
-              }}>
-              <Text
-                style={{
-                  fontSize: RFValue(15, 580),
-                  fontFamily: 'Poppins-SemiBold',
-                  color: 'black',
-                  textAlign: 'left',
-                }}>
-                Instructions
-              </Text>
-            </View>
-            <Text
-              style={{
-                fontSize: RFValue(13, 580),
-                fontFamily: 'Poppins-regular',
-                color: 'black',
-                textAlign: 'left',
-                justifyContent: 'space-evenly',
-              }}>
-              <View>
-                <Icon name="ellipse" type="ionicon" size={8} color={'black'} />
-              </View>
-              {/* {quiz_list[0].quiz_instruction
-                ? quiz_list[0].quiz_instruction.instructions
-                : ' Once you have answered all of the questions in the quiz, select “Finish attempt. '} */}
-            </Text>
-            <Pressable
-              onPress={() => {
-                changeDesc(!showDesc);
-              }}
-              style={{
-                width: Dimensions.get('screen').width / 3.2,
-                height: Dimensions.get('screen').height / 19,
-                alignSelf: 'center',
-                alignItems: 'center',
-                backgroundColor: '#1B6AA5',
-                // opacity: '2',
-                opacity: 0.8,
-                justifyContent: 'center',
-                borderRadius: 5,
-                marginLeft: 10,
-                shadowColor: 'black',
-                elevation: 4,
-              }}>
-              <Text
-                style={{
-                  fontSize: RFValue(17, 580),
-                  fontFamily: 'Poppins-SemiBold',
-                  color: 'white',
-                }}>
-                Start
-              </Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
-      {props.isLoading ? (
-        <Verticalskeleton />
-      ) : (
-        <FlatList
-          showsHorizontalScrollIndicator={false}
-          data={props.data}
-          renderItem={renderFlatlist}
-          keyExtractor={item => item.id}
-          horizontal={false}
-        />
-      )}
-    </View>
-  );
-};
+//        .then(json => {
+//         console.warn(json);
+//          if (json.status) {
+//           navigation.navigate('Quiz');
+//           alert("iam runnung")
+          
+//          } else {
+
+          
+//          }
+//        })
+//        .catch(error => {
+//          console.log(error);
+//        })
+//        .finally(() => {});
+//    };
+
+//   return (
+//     <View
+//       style={{
+//         flex: 1,
+//         // backgroundColor: 'red',
+//         alignItems: 'center',
+//         marginHorizontal: '2%',
+//         // height: Dimensions.get('screen').height / 10,
+//         justifyContent: 'center',
+//         // backgroundColor: 'green',
+//       }}>
+//       <Modal
+//         isVisible={show}
+//         animationIn="slideInUp"
+//         animationOut="slideOutDown"
+//         onBackdropPress={() => changeShow(!show)}>
+//         <View style={Signupstyle.centeredView}>
+//           <View style={Signupstyle.modalView}>
+//             <View
+//               style={{
+//                 width: Dimensions.get('screen').width / 1.1,
+//                 // justifyContent: 'flex-end',
+//                 alignItems: 'flex-end',
+//               }}>
+//               <Pressable
+//                 onPress={() => {
+//                   changeShow(!show);
+//                 }}>
+//                 <Icon name="close-circle-outline" type="ionicon" size={35} />
+//               </Pressable>
+//             </View>
+//             <View>
+//               <Text
+//                 style={{
+//                   fontSize: RFValue(15, 580),
+//                   fontFamily: 'Poppins-SemiBold',
+//                   color: 'black',
+//                   textAlign: 'center',
+//                 }}>
+//                 Are you sure you want to start the Quiz
+//               </Text>
+//             </View>
+//             <View
+//               style={{
+//                 flexDirection: 'row',
+//                 justifyContent: 'space-evenly',
+//               }}>
+//               <Pressable
+//                 onPress={() => {
+//                   changeShow(!show);
+//                   changeDesc(!showDesc);
+//                 }}
+//                 style={{
+//                   width: Dimensions.get('screen').width / 3.1,
+//                   height: Dimensions.get('screen').height / 18,
+//                   alignSelf: 'center',
+//                   alignItems: 'center',
+//                   backgroundColor: '#437E14',
+//                   opacity: 0.7,
+//                   justifyContent: 'center',
+//                   borderRadius: 25,
+//                   marginLeft: 10,
+//                   shadowColor: 'black',
+//                   elevation: 4,
+//                 }}>
+//                 <Text
+//                   style={{
+//                     fontSize: RFValue(17, 580),
+//                     fontFamily: 'Poppins-SemiBold',
+//                     color: 'white',
+//                   }}>
+//                   Yes
+//                 </Text>
+//               </Pressable>
+//               <Pressable
+//                 onPress={() => {
+//                   changeShow(!show);
+//                 }}
+//                 style={{
+//                   width: Dimensions.get('screen').width / 3.1,
+//                   height: Dimensions.get('screen').height / 18,
+//                   alignSelf: 'center',
+//                   alignItems: 'center',
+//                   backgroundColor: '#F83030',
+//                   opacity: 0.7,
+//                   justifyContent: 'center',
+//                   borderRadius: 25,
+//                   marginLeft: 10,
+//                   shadowColor: 'black',
+//                   elevation: 4,
+//                 }}>
+//                 <Text
+//                   style={{
+//                     fontSize: RFValue(17, 580),
+//                     fontFamily: 'Poppins-SemiBold',
+//                     color: 'white',
+//                   }}>
+//                   No
+//                 </Text>
+//               </Pressable>
+//             </View>
+//           </View>
+//         </View>
+//       </Modal>
+
+//       <Modal
+//         isVisible={showDesc}
+//         animationType="fade"
+//         animationIn="slideInUp"
+//         animationOut="slideOutDown"
+//         onBackdropPress={() => changeShow(!showDesc)}>
+//         <View style={Signupstyle.centeredView}>
+//           <View style={Signupstyle.modalView}>
+//             <View
+//               style={{
+//                 width: Dimensions.get('screen').width / 1.1,
+//                 // justifyContent: 'flex-end',
+//                 alignItems: 'flex-end',
+//               }}>
+//               <Pressable
+//                 onPress={() => {
+//                   changeDesc(!showDesc);
+//                 }}>
+//                 <Icon name="close-circle-outline" type="ionicon" size={35} />
+//               </Pressable>
+//             </View>
+
+//             <View
+//               style={{
+//                 flexDirection: 'row',
+//                 width: Dimensions.get('screen').width / 1.1,
+//                 height: Dimensions.get('screen').height / 15,
+//                 justifyContent: 'space-between',
+//                 // backgroundColor: 'red',
+//               }}>
+//               <View
+//                 style={{
+//                   height: Dimensions.get('screen').height / 15,
+//                   width: Dimensions.get('screen').width / 1.8,
+//                   // backgroundColor: 'green',
+//                   justifyContent: 'center',
+//                   flexDirection: 'row',
+//                   justifyContent: 'space-evenly',
+//                   alignItems: 'center',
+//                 }}>
+//                 <View>
+//                   <Icon
+//                     name="play-circle-outline"
+//                     type="ionicon"
+//                     size={35}
+//                     color={'black'}
+//                   />
+//                 </View>
+//                 <View>
+//                   <Text
+//                     style={{
+//                       fontSize: RFValue(18, 580),
+//                       fontFamily: 'Poppins-Bold',
+//                       color: 'black',
+//                     }}>
+//                     {/* {quiz_list[0].subject_quiz_name} */}
+//                   </Text>
+//                 </View>
+//               </View>
+//               <View
+//                 style={{
+//                   height: Dimensions.get('screen').height / 15,
+//                   width: Dimensions.get('screen').width / 2.8,
+//                   // backgroundColor: 'green',
+//                   justifyContent: 'center',
+//                   flexDirection: 'row',
+//                   justifyContent: 'center',
+//                   alignItems: 'center',
+//                 }}>
+//                 <View>
+//                   <Icon
+//                     name="timer-outline"
+//                     type="ionicon"
+//                     size={30}
+//                     color={'black'}
+//                   />
+//                 </View>
+//                 <View>
+//                   <Text
+//                     style={{
+//                       fontSize: RFValue(14, 580),
+//                       fontFamily: 'Poppins-SemiBold',
+//                       color: 'black',
+//                     }}>
+//                     {'30 min'}
+//                   </Text>
+//                 </View>
+//               </View>
+//             </View>
+//             <View
+//               style={{
+//                 alignSelf: 'flex-start',
+//               }}>
+//               <Text
+//                 style={{
+//                   fontSize: RFValue(15, 580),
+//                   fontFamily: 'Poppins-SemiBold',
+//                   color: 'black',
+//                   textAlign: 'left',
+//                 }}>
+//                 Instructions
+//               </Text>
+//             </View>
+//             <Text
+//               style={{
+//                 fontSize: RFValue(13, 580),
+//                 fontFamily: 'Poppins-regular',
+//                 color: 'black',
+//                 textAlign: 'left',
+//                 justifyContent: 'space-evenly',
+//               }}>
+//               <View>
+//                 <Icon name="ellipse" type="ionicon" size={8} color={'black'} />
+//               </View>
+//               {/* {quiz_list[0].quiz_instruction
+//                 ? quiz_list[0].quiz_instruction.instructions
+//                 : ' Once you have answered all of the questions in the quiz, select “Finish attempt. '} */}
+//             </Text>
+//             <Pressable
+//               onPress={() => {
+//                 start_quiz(token, subject_id);
+//                 changeDesc(!showDesc);
+//               }}
+//               style={{
+//                 width: Dimensions.get('screen').width / 3.2,
+//                 height: Dimensions.get('screen').height / 19,
+//                 alignSelf: 'center',
+//                 alignItems: 'center',
+//                 backgroundColor: '#1B6AA5',
+//                 // opacity: '2',
+//                 opacity: 0.8,
+//                 justifyContent: 'center',
+//                 borderRadius: 5,
+//                 marginLeft: 10,
+//                 shadowColor: 'black',
+//                 elevation: 4,
+//               }}>
+//               <Text
+//                 style={{
+//                   fontSize: RFValue(17, 580),
+//                   fontFamily: 'Poppins-SemiBold',
+//                   color: 'white',
+//                 }}>
+//                 Start
+//               </Text>
+//             </Pressable>
+//           </View>
+//         </View>
+//       </Modal>
+//       {props.isLoading ? (
+//         <Verticalskeleton />
+//       ) : (
+//         <FlatList
+//           showsHorizontalScrollIndicator={false}
+//           data={props.data}
+//           renderItem={renderFlatlist}
+//           keyExtractor={item => item.id}
+//           horizontal={false}
+//         />
+//       )}
+//     </View>
+//   );
+// };
