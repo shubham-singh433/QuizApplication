@@ -12,7 +12,7 @@ import Toast from 'react-native-root-toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const Stack = createNativeStackNavigator();
 
-global.api_key = 'http://192.168.1.7:8000/api/';
+global.api_key = 'http://192.168.1.2:8000/api/';
 global.token = '';
 const App = () => {
   const [token, setToken] = useState('');

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect,useContext} from 'react';
 import {
   Text,
   View,
@@ -14,11 +14,12 @@ import LinearGradient from 'react-native-linear-gradient';
 import {Icon, CheckBox} from 'react-native-elements';
 import CountDown from 'react-native-countdown-component';
 import {AuthContext} from '../../AuthContextProvider';
+import {useNavigation} from '@react-navigation/native';
 
 
-const Quiz = ({navigation,props}) => {
-
-  const {quizid}=props.quiz_id;
+const Quiz = props => {
+ const navigation = useNavigation();
+ const selected_quiz = props.route.params.quiz_id;
     const {token} = useContext(AuthContext);
   const [count, setCount] = useState(0);
   const [question, setQuestion] = useState([]);
@@ -27,25 +28,25 @@ const Quiz = ({navigation,props}) => {
   
 
   const getQuestion = () => {
-    fetch(global.api + 'users/fetch-first-question', {
+    fetch(global.api_key + 'users/fetch-first-question', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        Authorization:
-          token,
+        Authorization: token,
       },
       body: JSON.stringify({
-        subject_quiz_id: quizid,
+        subject_quiz_id: selected_quiz,
       }),
     })
       .then(response => response.json())
       .then(json => {
         if (json.status) {
+          // alert(json.status)
           setQuestion(json.data[0]);
           setTotal(json.count);
           setOptions(json.data[0].quiz_answers[0]);
-          // console.warn(question);
+
           // console.warn(Total);
           // console.warn(options);
         } else {
@@ -68,16 +69,15 @@ const Quiz = ({navigation,props}) => {
     // alert(question.id);
     // alert(question.subject_quiz_id);
     // alert(question.question_type);
-    fetch(global.api + 'users/fetch-next-question', {
+    fetch(global.api_key + 'users/fetch-next-question', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        Authorization:
-          'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYmNiZTYxNjdiNGY0ZTY3YWQ5YTI2NzliYTZlYzJhNGFiYjBkYTY2Nzg2NDk1NDJjZWNhZWQyNjdkZjk1MjIxODY0OTdiY2EyMTE5NjZlMmIiLCJpYXQiOjE2ODc4NDYxNTguMzAwMzE5LCJuYmYiOjE2ODc4NDYxNTguMzAwMzIzLCJleHAiOjE3MDM2NTczNTguMjkzMTYyLCJzdWIiOiI0MyIsInNjb3BlcyI6W119.kVUAx2fTvlWrq_BrQsAYr2-D_JinO3AcWjfTlbcOdp-3jf2FHp-wWVpWYjvlA1avz29hLrUjkPj8lfjQfYGhBaVb495AG0ObIPAUumz8GmRfIicR1X06mJSB2IMcF7JqfX8d3sh7EQaK-75EiKCIXY6JLs2FUkSPnh1h5136xCsRPCMsXjaytjfBjp6Fbg5JADZAdtf-XhKj3Vx4ovpiwrWxJpUBlt-0PiU7B-10xXvwJvhBbJ5_Yutooq1VrccPejqIRR5oX0iwCt1Yci6vrYoSU2lMhti1C9MqP9x2M-U7FsMq--qjKTvhiXT-gmwFHCouOgCaEBWzx0XjYuSkC77YekfVTe6F_M3TJ15alKhThWZMRwu5QpGXInTfvfB0bYY-q3DstEw-EmMw4lZ5mRDTRVWGEIm81no1rYEu9SWd1FfG8xbciw9rR4bjJd18pfV5fS41wFcBhpUH-bNztj7gb7SxamTPgzWwxeZOyyWNBAjn8MlTsIkTs9sLd6NkbXMPm6wIU-9Ekfvc9uhCFQjuj_FD-EMBT897Xs82Jt7c_Hbiqcl06m_3idGTrDzadMxfJyMv_JLt5T-SQKZ7AiYqkJrnJFnynyxghKp_ZTnfnr-oQtzFbpMGAKWvVuU4r1fyxQQKLAg1PljRyzQ7JMjKtL1USbgjFRrDkG1legw',
+        Authorization:token
       },
       body: JSON.stringify({
-        option_id:count,
+        option_id: count,
         question_id: question.id,
         subject_quiz_id: question.subject_quiz_id,
         question_type: question.question_type,
@@ -86,8 +86,8 @@ const Quiz = ({navigation,props}) => {
       .then(response => response.json())
       .then(json => {
         // console.warn(json);
-        alert(count);
-        setCount('')
+        // alert(count);
+        setCount('');
         if (json.status) {
           // alert('hi');
           // if()

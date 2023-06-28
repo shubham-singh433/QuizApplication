@@ -13,7 +13,7 @@ const DropdownComponent = ({getinfo}) => {
   }, []);
 
   const fetch_collegeName = () => {
-    fetch(global.api + 'user/colleges/all', {
+    fetch(global.api_key + 'user/colleges/all', {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -40,7 +40,7 @@ const DropdownComponent = ({getinfo}) => {
 
   const fetch_courses = id => {
     // alert('hi')
-    fetch(global.api + 'user/courses/all', {
+    fetch(global.api_key + 'user/courses/all', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

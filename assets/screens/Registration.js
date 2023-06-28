@@ -24,7 +24,7 @@ const Registration = () => {
   const [course_id, setCourse_id] = useState('');
   const [firstname, setFirstName] = useState('');
   const [Lastname, setLastName] = useState('');
-  const [DOB, setDOB] = useState('DOB');
+  const [DOB, setDOB] = useState('03/09/2000');
   const [email, setEmail] = useState('');
   const [ContactNo, setContactNo] = useState('');
   const [AlternateContactNo, setAlternateContactNo] = useState('');
@@ -53,7 +53,7 @@ const Registration = () => {
     // alert('hi')
     // console.warn(college_id);
     // console.warn(course_id);
-    fetch(global.api + 'user/register', {
+    fetch(global.api_key + 'user/register', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

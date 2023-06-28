@@ -5,9 +5,10 @@ const  Styler= StyleSheet.create(
         font:{
             color:'#1B6AA5',
             fontSize: 25,
-            fontWeight:'600',
+            // fontWeight:'600',
             marginVertical:'6%',
-            alignSelf:'center'
+            alignSelf:'center',
+            fontFamily:'Poppins-Bold',
         },
         logo:{
             height:100,
@@ -46,7 +47,9 @@ const  Styler= StyleSheet.create(
             top:70,
             shadowColor:'black',
             elevation:5,
-            padding:10
+            padding:10,
+            paddingBottom:25
+            // padi
           },
           InputBox2:{
             height:230,
@@ -97,7 +100,16 @@ const  Styler= StyleSheet.create(
             fontSize:20,
             fontWeight:'700',
 
-          }
+          },
+          Mcq:{flexDirection: 'row',
+          //   borderWidth: 1,
+          marginBottom: 15,
+          width: '90%',
+          alignSelf: 'center',
+          borderRadius: 10,
+          shadowColor: 'black',
+          elevation: 3,
+          backgroundColor: 'white',}
 
 
 

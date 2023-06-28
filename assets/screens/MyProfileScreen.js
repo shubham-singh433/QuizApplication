@@ -22,37 +22,7 @@ import {AuthContext} from '../../AuthContextProvider';
 
 // Global StyleSheet Import
 
-const school_name = [
-  "St. Joseph's Academy",
-  "St. Mary's Convent School",
-  "St. Thomas' College",
-  "St. Joseph's School",
-  "St. Mary's School",
-  "St. Thomas' School",
-  "St. Xavier's School",
-  "St. Francis' School",
-  "St. George's School",
-  "St. Jude's School",
-  "St. John's School",
-];
 
-const course_name = [
-  'B.A.',
-  'B.Arch.',
-  'B.Com.',
-  'B.Ed.',
-  'B.Pharma.',
-  'B.Sc.',
-  'B.Tech.',
-  'BBA',
-  'BCA',
-  'BDS',
-  'BHM',
-  'BVSc.',
-  'LLB',
-  'MBBS',
-  'Other',
-];
 
 const MyProfileScreen = () => {
   const {logout, token} = useContext(AuthContext);
@@ -61,7 +31,7 @@ const MyProfileScreen = () => {
   const [last_name, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [contact, setContact] = useState('');
-  const [dob, setDob] = useState('11-02-1998');
+  const [dob, setDob] = useState('');
 
   const [isVisible, setIsVisible] = useState(false);
 
@@ -79,16 +49,13 @@ const MyProfileScreen = () => {
         if (json.message == 'Unauthenticated.') {
           logout();
         }
-        if (json.status) {
+        else if (json.status) {
           console.warn('getprogile', json);
-
           setFirstName(json.data[0].firstname);
           setLastName(json.data[0].lastname);
           setEmail(json.data[0].email);
           setContact(json.data[0].contact);
           setDob(json.data[0].date_of_birth);
-        } else {
-          logout();
         }
       })
       .catch(error => {
