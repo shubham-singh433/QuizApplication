@@ -39,6 +39,9 @@ const Home = props => {
   const [featured, setFeatured] = useState([]);
   const [show, changeShow] = useState(false);
   const [showDesc, changeDesc] = useState(false);
+  const [instruction,setIns]=useState("");
+  const [quiz_name,setQuizname]=useState('');
+  
 
   //receive name from async storage
   const getData = async () => {
@@ -131,6 +134,7 @@ const Home = props => {
         if (json.status) {
           console.warn(json.data);
           setQuiz(json.data);
+          setIns(json.data[0].quiz_instruction.instructions);
         } else {
           setQuiz([]);
         }
@@ -289,6 +293,7 @@ const Home = props => {
             <Pressable
               onPress={() => {
                 set_SelectedQuiz(item.id);
+                setQuizname(item.subject_quiz_name);
                 changeShow(!show);
               }}
               style={{
@@ -448,6 +453,7 @@ const Home = props => {
                 style={{
                   flexDirection: 'row',
                   justifyContent: 'space-evenly',
+                  marginVertical:10,
                 }}>
                 <Pressable
                   onPress={() => {
@@ -562,8 +568,8 @@ const Home = props => {
                         fontFamily: 'Poppins-Bold',
                         color: 'black',
                       }}>
-                      {/* {quiz_list[0].subject_quiz_name} */}
-                    </Text>
+                       {quiz_name}
+                      </Text>
                   </View>
                 </View>
                 <View
@@ -626,7 +632,7 @@ const Home = props => {
                     color={'black'}
                   />
                 </View>
-              ' Once you have answered all of the questions in the quiz, select “Finish attempt. '
+                {instruction?(instruction):("Once you have answered all of the questions in the quiz, select Finish attempt")} 
               </Text>
               <Pressable
                 onPress={() => {
